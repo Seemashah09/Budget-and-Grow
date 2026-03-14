@@ -1,0 +1,1108 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BudgetAndGrow - Manage Money, Grow Wealth</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&amp;family=Playfair+Display:wght@600;700;800&amp;display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            midnight: '#0B1120',
+            deepblue: '#131B2E',
+            accent: '#00D4AA',
+            gold: '#FFB800',
+            surface: '#1A2340',
+            muted: '#8892A8'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html, body { height: 100%; margin: 0; }
+    * { font-family: 'DM Sans', sans-serif; }
+    .font-display { font-family: 'Playfair Display', serif; }
+    .gradient-text { background: linear-gradient(135deg, #00D4AA, #00B4D8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .glass { background: rgba(26, 35, 64, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(0, 212, 170, 0.1); }
+    .glass-hover:hover { background: rgba(26, 35, 64, 0.8); border-color: rgba(0, 212, 170, 0.3); transform: translateY(-4px); }
+    .glow { box-shadow: 0 0 40px rgba(0, 212, 170, 0.15); }
+    .glow-sm { box-shadow: 0 0 20px rgba(0, 212, 170, 0.1); }
+    .btn-primary { background: linear-gradient(135deg, #00D4AA, #00B4D8); transition: all 0.3s; }
+    .btn-primary:hover { box-shadow: 0 8px 30px rgba(0, 212, 170, 0.4); transform: translateY(-2px); }
+    .hero-bg { background: radial-gradient(ellipse at 20% 50%, rgba(0, 212, 170, 0.08) 0%, transparent 50%), radial-gradient(ellipse at 80% 20%, rgba(0, 180, 216, 0.06) 0%, transparent 50%), radial-gradient(ellipse at 50% 80%, rgba(255, 184, 0, 0.04) 0%, transparent 50%); }
+    .calc-input { background: rgba(11, 17, 32, 0.6); border: 1px solid rgba(0, 212, 170, 0.2); color: #fff; transition: all 0.3s; }
+    .calc-input:focus { border-color: #00D4AA; box-shadow: 0 0 15px rgba(0, 212, 170, 0.2); outline: none; }
+    .result-card { background: linear-gradient(135deg, rgba(0, 212, 170, 0.1), rgba(0, 180, 216, 0.05)); border: 1px solid rgba(0, 212, 170, 0.2); }
+    .nav-link { position: relative; }
+    .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: linear-gradient(90deg, #00D4AA, #00B4D8); transition: width 0.3s; }
+    .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+    .blog-card { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+    .blog-card:hover { transform: translateY(-6px); }
+    .blog-card:hover .blog-img { transform: scale(1.05); }
+    .blog-img { transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+    .fade-in { animation: fadeIn 0.6s ease forwards; opacity: 0; }
+    .slide-up { animation: slideUp 0.6s ease forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    @keyframes slideUp { to { opacity: 1; transform: translateY(0); } from { transform: translateY(30px); } }
+    .stagger-1 { animation-delay: 0.1s; }
+    .stagger-2 { animation-delay: 0.2s; }
+    .stagger-3 { animation-delay: 0.3s; }
+    .stagger-4 { animation-delay: 0.4s; }
+    .stagger-5 { animation-delay: 0.5s; }
+    .tab-active { background: linear-gradient(135deg, #00D4AA, #00B4D8); color: #0B1120; font-weight: 700; }
+    .progress-bar { background: linear-gradient(90deg, #00D4AA, #00B4D8); transition: width 1s ease; }
+    .floating-orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3; animation: float 8s ease-in-out infinite; }
+    @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0B1120; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(#00D4AA, #00B4D8); border-radius: 4px; }
+    .dropdown-menu { display: none; position: absolute; top: 100%; left: 0; z-index: 50; }
+    .dropdown:hover .dropdown-menu { display: block; }
+    .calc-tab { cursor: pointer; padding: 10px 20px; border-radius: 8px; transition: all 0.3s; font-size: 14px; white-space: nowrap; }
+    .range-slider { -webkit-appearance: none; appearance: none; height: 6px; border-radius: 3px; background: linear-gradient(90deg, #00D4AA, #00B4D8); outline: none; }
+    .range-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #00D4AA; cursor: pointer; box-shadow: 0 0 10px rgba(0,212,170,0.5); }
+    .chart-bar { transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full bg-midnight text-white overflow-auto"><!-- Navigation -->
+  <nav id="main-nav" class="fixed top-0 left-0 right-0 z-50 glass border-b border-white/5">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16"><a href="#" onclick="navigateTo('home')" class="flex items-center gap-2 cursor-pointer">
+      <div class="w-9 h-9 rounded-lg btn-primary flex items-center justify-center"><span class="text-midnight font-bold text-lg">B</span>
+      </div><span class="font-bold text-lg">Budget<span class="gradient-text">AndGrow</span></span> </a>
+     <div class="hidden md:flex items-center gap-8"><a onclick="navigateTo('home')" class="nav-link text-sm text-gray-300 hover:text-white cursor-pointer active" data-nav="home">Home</a>
+      <div class="dropdown relative"><a onclick="navigateTo('calculators')" class="nav-link text-sm text-gray-300 hover:text-white cursor-pointer flex items-center gap-1" data-nav="calculators"> Calculators <i data-lucide="chevron-down" style="width:14px;height:14px;"></i> </a>
+       <div class="dropdown-menu glass rounded-xl p-2 w-52 mt-2"><a onclick="navigateTo('calculators','budget')" class="block px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-lg cursor-pointer">Budget Calculator</a> <a onclick="navigateTo('calculators','loan')" class="block px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-lg cursor-pointer">Loan Calculator</a> <a onclick="navigateTo('calculators','mortgage')" class="block px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-lg cursor-pointer">Mortgage Calculator</a> <a onclick="navigateTo('calculators','investment')" class="block px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-lg cursor-pointer">Investment Calculator</a> <a onclick="navigateTo('calculators','savings')" class="block px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-lg cursor-pointer">Savings Goal Calculator</a>
+       </div>
+      </div><a onclick="navigateTo('blog')" class="nav-link text-sm text-gray-300 hover:text-white cursor-pointer" data-nav="blog">Blog</a> <a onclick="navigateTo('about')" class="nav-link text-sm text-gray-300 hover:text-white cursor-pointer" data-nav="about">About</a>
+     </div><button onclick="toggleMobileMenu()" class="md:hidden text-gray-300 hover:text-white"> <i data-lucide="menu" id="menu-icon" style="width:24px;height:24px;"></i> </button>
+    </div>
+   </div><!-- Mobile Menu -->
+   <div id="mobile-menu" class="hidden md:hidden glass border-t border-white/5 pb-4">
+    <div class="px-4 pt-2 space-y-1"><a onclick="navigateTo('home');toggleMobileMenu()" class="block px-3 py-2 text-gray-300 hover:text-white cursor-pointer">Home</a> <a onclick="navigateTo('calculators');toggleMobileMenu()" class="block px-3 py-2 text-gray-300 hover:text-white cursor-pointer">Calculators</a> <a onclick="navigateTo('blog');toggleMobileMenu()" class="block px-3 py-2 text-gray-300 hover:text-white cursor-pointer">Blog</a> <a onclick="navigateTo('about');toggleMobileMenu()" class="block px-3 py-2 text-gray-300 hover:text-white cursor-pointer">About</a>
+    </div>
+   </div>
+  </nav><!-- ========== HOME PAGE ========== -->
+  <main id="page-home" class="w-full"><!-- Hero -->
+   <section class="hero-bg relative min-h-[90%] flex items-center pt-16">
+    <div class="floating-orb w-64 h-64 bg-accent top-20 left-10"></div>
+    <div class="floating-orb w-48 h-48 bg-blue-500 bottom-20 right-20" style="animation-delay:3s"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
+     <div class="grid lg:grid-cols-2 gap-12 items-center">
+      <div>
+       <div class="slide-up inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-6 text-sm text-accent"><i data-lucide="trending-up" style="width:16px;height:16px;"></i> <span id="site-tagline">Your Path to Financial Freedom</span>
+       </div>
+       <h1 id="hero-title" class="slide-up stagger-1 font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6">Manage Money.<br><span class="gradient-text">Grow Wealth.</span></h1>
+       <p id="hero-desc" class="slide-up stagger-2 text-gray-400 text-lg leading-relaxed mb-8 max-w-lg">Welcome to BudgetAndGrow, your guide to managing money, saving smartly, and growing your wealth. Use our calculators, read expert blogs, and get the tools you need for financial freedom.</p>
+       <div class="slide-up stagger-3 flex flex-wrap gap-4"><button onclick="navigateTo('calculators')" class="btn-primary text-midnight font-bold px-8 py-3.5 rounded-xl flex items-center gap-2"> <i data-lucide="calculator" style="width:18px;height:18px;"></i> Try Calculators </button> <button onclick="navigateTo('blog')" class="glass hover:bg-white/10 px-8 py-3.5 rounded-xl font-medium flex items-center gap-2 transition-all"> <i data-lucide="book-open" style="width:18px;height:18px;"></i> Read Blogs </button>
+       </div>
+      </div>
+      <div class="slide-up stagger-4 hidden lg:block">
+       <div class="glass rounded-2xl p-6 glow">
+        <div class="flex items-center justify-between mb-4"><span class="text-sm text-muted">Portfolio Growth</span> <span class="text-accent text-sm font-bold">+24.8%</span>
+        </div>
+        <div class="flex items-end gap-2 h-40 mb-4" id="hero-chart">
+        </div>
+        <div class="grid grid-cols-3 gap-3">
+         <div class="bg-midnight/50 rounded-xl p-3 text-center">
+          <p class="text-accent text-lg font-bold">£12.4k</p>
+          <p class="text-muted text-xs">Savings</p>
+         </div>
+         <div class="bg-midnight/50 rounded-xl p-3 text-center">
+          <p class="text-gold text-lg font-bold">£8.2k</p>
+          <p class="text-muted text-xs">Invested</p>
+         </div>
+         <div class="bg-midnight/50 rounded-xl p-3 text-center">
+          <p class="text-blue-400 text-lg font-bold">£3.1k</p>
+          <p class="text-muted text-xs">Budget</p>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Features Section -->
+   <section class="py-20 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="text-center mb-16">
+      <h2 class="font-display text-3xl sm:text-4xl font-bold mb-4">Everything You Need to <span class="gradient-text">Grow</span></h2>
+      <p class="text-muted max-w-2xl mx-auto">Powerful calculators, expert advice, and actionable tips — all in one place.</p>
+     </div>
+     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="glass rounded-2xl p-6 glass-hover cursor-pointer transition-all" onclick="navigateTo('calculators','budget')">
+       <div class="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-4"><i data-lucide="wallet" style="width:24px;height:24px;color:#00D4AA;"></i>
+       </div>
+       <h3 class="font-bold text-lg mb-2">Budget Calculator</h3>
+       <p class="text-muted text-sm">Plan your monthly income and expenses with precision.</p>
+      </div>
+      <div class="glass rounded-2xl p-6 glass-hover cursor-pointer transition-all" onclick="navigateTo('calculators','loan')">
+       <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mb-4"><i data-lucide="banknote" style="width:24px;height:24px;color:#00B4D8;"></i>
+       </div>
+       <h3 class="font-bold text-lg mb-2">Loan Calculator</h3>
+       <p class="text-muted text-sm">Calculate monthly payments and total interest on any loan.</p>
+      </div>
+      <div class="glass rounded-2xl p-6 glass-hover cursor-pointer transition-all" onclick="navigateTo('calculators','mortgage')">
+       <div class="w-12 h-12 rounded-xl bg-gold/10 flex items-center justify-center mb-4"><i data-lucide="home" style="width:24px;height:24px;color:#FFB800;"></i>
+       </div>
+       <h3 class="font-bold text-lg mb-2">Mortgage Calculator</h3>
+       <p class="text-muted text-sm">Find your ideal mortgage with advanced amortisation schedules.</p>
+      </div>
+      <div class="glass rounded-2xl p-6 glass-hover cursor-pointer transition-all" onclick="navigateTo('calculators','investment')">
+       <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center mb-4"><i data-lucide="trending-up" style="width:24px;height:24px;color:#A855F7;"></i>
+       </div>
+       <h3 class="font-bold text-lg mb-2">Investment Calculator</h3>
+       <p class="text-muted text-sm">Project compound growth on your investments over time.</p>
+      </div>
+      <div class="glass rounded-2xl p-6 glass-hover cursor-pointer transition-all" onclick="navigateTo('calculators','savings')">
+       <div class="w-12 h-12 rounded-xl bg-pink-500/10 flex items-center justify-center mb-4"><i data-lucide="piggy-bank" style="width:24px;height:24px;color:#EC4899;"></i>
+       </div>
+       <h3 class="font-bold text-lg mb-2">Savings Goal Calculator</h3>
+       <p class="text-muted text-sm">Plan exactly how to reach your savings targets.</p>
+      </div>
+      <div class="glass rounded-2xl p-6 glass-hover cursor-pointer transition-all" onclick="navigateTo('blog')">
+       <div class="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center mb-4"><i data-lucide="book-open" style="width:24px;height:24px;color:#22C55E;"></i>
+       </div>
+       <h3 class="font-bold text-lg mb-2">Expert Blog</h3>
+       <p class="text-muted text-sm">20+ articles on saving, investing, budgeting, and more.</p>
+      </div>
+     </div>
+    </div>
+   </section><!-- Stats -->
+   <section class="py-16 border-t border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
+      <div class="text-center">
+       <p class="font-display text-3xl sm:text-4xl font-bold gradient-text">5</p>
+       <p class="text-muted text-sm mt-1">Pro Calculators</p>
+      </div>
+      <div class="text-center">
+       <p class="font-display text-3xl sm:text-4xl font-bold gradient-text">20+</p>
+       <p class="text-muted text-sm mt-1">Expert Blogs</p>
+      </div>
+      <div class="text-center">
+       <p class="font-display text-3xl sm:text-4xl font-bold gradient-text">100%</p>
+       <p class="text-muted text-sm mt-1">Free to Use</p>
+      </div>
+      <div class="text-center">
+       <p class="font-display text-3xl sm:text-4xl font-bold gradient-text">£0</p>
+       <p class="text-muted text-sm mt-1">No Hidden Fees</p>
+      </div>
+     </div>
+    </div>
+   </section><!-- Featured Blogs Preview -->
+   <section class="py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="flex items-center justify-between mb-12">
+      <div>
+       <h2 class="font-display text-3xl font-bold">Latest from the <span class="gradient-text">Blog</span></h2>
+       <p class="text-muted mt-2">Expert tips to grow your financial knowledge.</p>
+      </div><button onclick="navigateTo('blog')" class="hidden sm:flex items-center gap-2 text-accent hover:text-white transition-colors text-sm font-medium"> View All <i data-lucide="arrow-right" style="width:16px;height:16px;"></i> </button>
+     </div>
+     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="featured-blogs"></div>
+    </div>
+   </section><!-- CTA -->
+   <section class="py-20">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+     <div class="glass rounded-3xl p-10 sm:p-16 glow relative overflow-hidden">
+      <div class="floating-orb w-32 h-32 bg-accent -top-10 -right-10"></div>
+      <h2 class="font-display text-3xl sm:text-4xl font-bold mb-4 relative z-10">Ready to Take Control?</h2>
+      <p class="text-muted mb-8 max-w-lg mx-auto relative z-10">Start using our free calculators today and take the first step towards financial freedom.</p><button onclick="navigateTo('calculators')" class="btn-primary text-midnight font-bold px-10 py-4 rounded-xl text-lg relative z-10"> Get Started Free </button>
+     </div>
+    </div>
+   </section>
+  </main><!-- ========== CALCULATORS PAGE ========== -->
+  <main id="page-calculators" class="w-full hidden">
+   <section class="pt-24 pb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="text-center mb-8">
+      <h1 class="font-display text-3xl sm:text-4xl font-bold mb-3">Financial <span class="gradient-text">Calculators</span></h1>
+      <p class="text-muted max-w-xl mx-auto">Professional-grade tools to plan your finances with precision.</p>
+     </div><!-- Calculator Tabs -->
+     <div class="flex flex-wrap justify-center gap-2 mb-8" id="calc-tabs"><button onclick="switchCalc('budget')" class="calc-tab glass text-gray-300" data-calc="budget"> <span class="flex items-center gap-2"><i data-lucide="wallet" style="width:16px;height:16px;"></i> Budget</span> </button> <button onclick="switchCalc('loan')" class="calc-tab glass text-gray-300" data-calc="loan"> <span class="flex items-center gap-2"><i data-lucide="banknote" style="width:16px;height:16px;"></i> Loan</span> </button> <button onclick="switchCalc('mortgage')" class="calc-tab glass text-gray-300" data-calc="mortgage"> <span class="flex items-center gap-2"><i data-lucide="home" style="width:16px;height:16px;"></i> Mortgage</span> </button> <button onclick="switchCalc('investment')" class="calc-tab glass text-gray-300" data-calc="investment"> <span class="flex items-center gap-2"><i data-lucide="trending-up" style="width:16px;height:16px;"></i> Investment</span> </button> <button onclick="switchCalc('savings')" class="calc-tab glass text-gray-300" data-calc="savings"> <span class="flex items-center gap-2"><i data-lucide="piggy-bank" style="width:16px;height:16px;"></i> Savings</span> </button>
+     </div><!-- BUDGET CALCULATOR -->
+     <div id="calc-budget" class="calc-panel hidden">
+      <div class="glass rounded-2xl p-6 sm:p-8 glow max-w-4xl mx-auto">
+       <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center"><i data-lucide="wallet" style="width:20px;height:20px;color:#00D4AA;"></i>
+        </div>
+        <h2 class="font-display text-2xl font-bold">Budget Calculator</h2>
+       </div>
+       <div class="grid md:grid-cols-2 gap-8">
+        <div>
+         <h3 class="text-accent font-bold mb-4 flex items-center gap-2"><i data-lucide="arrow-down-circle" style="width:16px;height:16px;"></i> Income</h3>
+         <div class="space-y-3">
+          <div><label for="budget-salary" class="text-sm text-muted block mb-1">Monthly Salary (£)</label> <input type="number" id="budget-salary" class="calc-input w-full rounded-xl px-4 py-3" value="3000" oninput="calcBudget()">
+          </div>
+          <div><label for="budget-other-income" class="text-sm text-muted block mb-1">Other Income (£)</label> <input type="number" id="budget-other-income" class="calc-input w-full rounded-xl px-4 py-3" value="0" oninput="calcBudget()">
+          </div>
+         </div>
+         <h3 class="text-red-400 font-bold mt-6 mb-4 flex items-center gap-2"><i data-lucide="arrow-up-circle" style="width:16px;height:16px;"></i> Expenses</h3>
+         <div class="space-y-3">
+          <div><label for="budget-housing" class="text-sm text-muted block mb-1">Housing / Rent (£)</label> <input type="number" id="budget-housing" class="calc-input w-full rounded-xl px-4 py-3" value="900" oninput="calcBudget()">
+          </div>
+          <div><label for="budget-transport" class="text-sm text-muted block mb-1">Transport (£)</label> <input type="number" id="budget-transport" class="calc-input w-full rounded-xl px-4 py-3" value="200" oninput="calcBudget()">
+          </div>
+          <div><label for="budget-food" class="text-sm text-muted block mb-1">Food &amp; Groceries (£)</label> <input type="number" id="budget-food" class="calc-input w-full rounded-xl px-4 py-3" value="400" oninput="calcBudget()">
+          </div>
+          <div><label for="budget-utilities" class="text-sm text-muted block mb-1">Utilities &amp; Bills (£)</label> <input type="number" id="budget-utilities" class="calc-input w-full rounded-xl px-4 py-3" value="200" oninput="calcBudget()">
+          </div>
+          <div><label for="budget-other" class="text-sm text-muted block mb-1">Other Expenses (£)</label> <input type="number" id="budget-other" class="calc-input w-full rounded-xl px-4 py-3" value="300" oninput="calcBudget()">
+          </div>
+         </div>
+        </div>
+        <div>
+         <div class="result-card rounded-2xl p-6 mb-6">
+          <h3 class="text-sm text-muted mb-1">Remaining Balance</h3>
+          <p id="budget-balance" class="font-display text-4xl font-bold gradient-text">£1,000</p>
+          <p id="budget-balance-pct" class="text-sm text-muted mt-1">33% of income</p>
+         </div>
+         <div class="space-y-4">
+          <div>
+           <div class="flex justify-between text-sm mb-1">
+            <span class="text-muted">Housing</span><span id="budget-housing-pct" class="text-accent">30%</span>
+           </div>
+           <div class="w-full h-2 bg-midnight rounded-full">
+            <div id="budget-housing-bar" class="progress-bar h-2 rounded-full" style="width:30%"></div>
+           </div>
+          </div>
+          <div>
+           <div class="flex justify-between text-sm mb-1">
+            <span class="text-muted">Transport</span><span id="budget-transport-pct" class="text-accent">7%</span>
+           </div>
+           <div class="w-full h-2 bg-midnight rounded-full">
+            <div id="budget-transport-bar" class="progress-bar h-2 rounded-full" style="width:7%"></div>
+           </div>
+          </div>
+          <div>
+           <div class="flex justify-between text-sm mb-1">
+            <span class="text-muted">Food</span><span id="budget-food-pct" class="text-accent">13%</span>
+           </div>
+           <div class="w-full h-2 bg-midnight rounded-full">
+            <div id="budget-food-bar" class="progress-bar h-2 rounded-full" style="width:13%"></div>
+           </div>
+          </div>
+          <div>
+           <div class="flex justify-between text-sm mb-1">
+            <span class="text-muted">Utilities</span><span id="budget-utilities-pct" class="text-accent">7%</span>
+           </div>
+           <div class="w-full h-2 bg-midnight rounded-full">
+            <div id="budget-utilities-bar" class="progress-bar h-2 rounded-full" style="width:7%"></div>
+           </div>
+          </div>
+          <div>
+           <div class="flex justify-between text-sm mb-1">
+            <span class="text-muted">Other</span><span id="budget-other-pct" class="text-accent">10%</span>
+           </div>
+           <div class="w-full h-2 bg-midnight rounded-full">
+            <div id="budget-other-bar" class="progress-bar h-2 rounded-full" style="width:10%"></div>
+           </div>
+          </div>
+          <div>
+           <div class="flex justify-between text-sm mb-1">
+            <span class="text-muted">Savings</span><span id="budget-savings-pct" class="text-green-400">33%</span>
+           </div>
+           <div class="w-full h-2 bg-midnight rounded-full">
+            <div id="budget-savings-bar" class="h-2 rounded-full bg-green-400" style="width:33%"></div>
+           </div>
+          </div>
+         </div>
+         <div class="mt-6 p-4 bg-midnight/50 rounded-xl">
+          <p class="text-sm text-muted"><i data-lucide="lightbulb" style="width:14px;height:14px;display:inline;color:#FFB800;"></i> <strong class="text-gold">Tip:</strong> Aim to save at least 20% of your income using the 50/30/20 rule.</p>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div><!-- LOAN CALCULATOR -->
+     <div id="calc-loan" class="calc-panel hidden">
+      <div class="glass rounded-2xl p-6 sm:p-8 glow max-w-4xl mx-auto">
+       <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center"><i data-lucide="banknote" style="width:20px;height:20px;color:#00B4D8;"></i>
+        </div>
+        <h2 class="font-display text-2xl font-bold">Loan Calculator</h2>
+       </div>
+       <div class="grid md:grid-cols-2 gap-8">
+        <div class="space-y-5">
+         <div><label for="loan-amount" class="text-sm text-muted block mb-1">Loan Amount (£)</label> <input type="number" id="loan-amount" class="calc-input w-full rounded-xl px-4 py-3" value="10000" oninput="calcLoan()"> <input type="range" id="loan-amount-range" class="range-slider w-full mt-2" min="1000" max="100000" step="1000" value="10000" oninput="document.getElementById('loan-amount').value=this.value;calcLoan()">
+         </div>
+         <div><label for="loan-rate" class="text-sm text-muted block mb-1">Interest Rate (% per year)</label> <input type="number" id="loan-rate" class="calc-input w-full rounded-xl px-4 py-3" value="5.5" step="0.1" oninput="calcLoan()"> <input type="range" id="loan-rate-range" class="range-slider w-full mt-2" min="0.5" max="30" step="0.1" value="5.5" oninput="document.getElementById('loan-rate').value=this.value;calcLoan()">
+         </div>
+         <div><label for="loan-term" class="text-sm text-muted block mb-1">Loan Term (years)</label> <input type="number" id="loan-term" class="calc-input w-full rounded-xl px-4 py-3" value="5" oninput="calcLoan()"> <input type="range" id="loan-term-range" class="range-slider w-full mt-2" min="1" max="30" step="1" value="5" oninput="document.getElementById('loan-term').value=this.value;calcLoan()">
+         </div>
+        </div>
+        <div>
+         <div class="result-card rounded-2xl p-6 mb-4">
+          <h3 class="text-sm text-muted mb-1">Monthly Payment</h3>
+          <p id="loan-monthly" class="font-display text-4xl font-bold gradient-text">£190.99</p>
+         </div>
+         <div class="grid grid-cols-2 gap-3 mb-4">
+          <div class="bg-midnight/50 rounded-xl p-4 text-center">
+           <p class="text-sm text-muted">Total Repayment</p>
+           <p id="loan-total" class="text-lg font-bold text-white">£11,459</p>
+          </div>
+          <div class="bg-midnight/50 rounded-xl p-4 text-center">
+           <p class="text-sm text-muted">Total Interest</p>
+           <p id="loan-interest" class="text-lg font-bold text-red-400">£1,459</p>
+          </div>
+         </div><!-- Loan visual -->
+         <div class="bg-midnight/50 rounded-xl p-4">
+          <p class="text-sm text-muted mb-3">Principal vs Interest</p>
+          <div class="flex h-6 rounded-full overflow-hidden">
+           <div id="loan-principal-bar" class="bg-accent transition-all duration-500" style="width:87%"></div>
+           <div id="loan-interest-bar" class="bg-red-400 transition-all duration-500" style="width:13%"></div>
+          </div>
+          <div class="flex justify-between text-xs mt-2"><span class="text-accent">Principal: <span id="loan-principal-pct">87%</span></span> <span class="text-red-400">Interest: <span id="loan-interest-pct">13%</span></span>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div><!-- MORTGAGE CALCULATOR -->
+     <div id="calc-mortgage" class="calc-panel hidden">
+      <div class="glass rounded-2xl p-6 sm:p-8 glow max-w-5xl mx-auto">
+       <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 rounded-xl bg-gold/10 flex items-center justify-center"><i data-lucide="home" style="width:20px;height:20px;color:#FFB800;"></i>
+        </div>
+        <h2 class="font-display text-2xl font-bold">Mortgage Calculator</h2>
+       </div>
+       <div class="grid md:grid-cols-2 gap-8">
+        <div class="space-y-5">
+         <div><label for="mort-price" class="text-sm text-muted block mb-1">Property Price (£)</label> <input type="number" id="mort-price" class="calc-input w-full rounded-xl px-4 py-3" value="300000" oninput="calcMortgage()"> <input type="range" class="range-slider w-full mt-2" min="50000" max="1000000" step="5000" value="300000" oninput="document.getElementById('mort-price').value=this.value;calcMortgage()">
+         </div>
+         <div><label for="mort-deposit" class="text-sm text-muted block mb-1">Deposit (£)</label> <input type="number" id="mort-deposit" class="calc-input w-full rounded-xl px-4 py-3" value="30000" oninput="calcMortgage()"> <input type="range" class="range-slider w-full mt-2" min="0" max="500000" step="5000" value="30000" oninput="document.getElementById('mort-deposit').value=this.value;calcMortgage()">
+         </div>
+         <div><label for="mort-rate" class="text-sm text-muted block mb-1">Interest Rate (% per year)</label> <input type="number" id="mort-rate" class="calc-input w-full rounded-xl px-4 py-3" value="4.5" step="0.1" oninput="calcMortgage()">
+         </div>
+         <div><label for="mort-term" class="text-sm text-muted block mb-1">Mortgage Term (years)</label> <input type="number" id="mort-term" class="calc-input w-full rounded-xl px-4 py-3" value="25" oninput="calcMortgage()"> <input type="range" class="range-slider w-full mt-2" min="5" max="40" step="1" value="25" oninput="document.getElementById('mort-term').value=this.value;calcMortgage()">
+         </div>
+         <div><label for="mort-type" class="text-sm text-muted block mb-1">Mortgage Type</label> <select id="mort-type" class="calc-input w-full rounded-xl px-4 py-3 cursor-pointer" onchange="calcMortgage()"> <option value="repayment">Repayment</option> <option value="interest-only">Interest Only</option> </select>
+         </div>
+        </div>
+        <div>
+         <div class="result-card rounded-2xl p-6 mb-4">
+          <h3 class="text-sm text-muted mb-1">Monthly Payment</h3>
+          <p id="mort-monthly" class="font-display text-4xl font-bold gradient-text">£1,501</p>
+          <p id="mort-ltv" class="text-sm text-muted mt-1">LTV: 90%</p>
+         </div>
+         <div class="grid grid-cols-2 gap-3 mb-4">
+          <div class="bg-midnight/50 rounded-xl p-4 text-center">
+           <p class="text-sm text-muted">Total Cost</p>
+           <p id="mort-total" class="text-lg font-bold text-white">£450,332</p>
+          </div>
+          <div class="bg-midnight/50 rounded-xl p-4 text-center">
+           <p class="text-sm text-muted">Total Interest</p>
+           <p id="mort-interest-total" class="text-lg font-bold text-red-400">£180,332</p>
+          </div>
+         </div>
+         <div class="bg-midnight/50 rounded-xl p-4 mb-4">
+          <p class="text-sm text-muted mb-3">Amortisation (Year-by-Year)</p>
+          <div id="mort-amort-chart" class="flex items-end gap-1 h-32 overflow-x-auto pb-2"></div>
+         </div>
+         <div class="bg-midnight/50 rounded-xl p-4 max-h-48 overflow-y-auto" id="mort-schedule-container">
+          <p class="text-sm text-muted mb-2">Yearly Schedule</p>
+          <table class="w-full text-xs">
+           <thead>
+            <tr class="text-muted">
+             <th class="text-left py-1">Year</th>
+             <th class="text-right py-1">Principal</th>
+             <th class="text-right py-1">Interest</th>
+             <th class="text-right py-1">Balance</th>
+            </tr>
+           </thead>
+           <tbody id="mort-schedule"></tbody>
+          </table>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div><!-- INVESTMENT CALCULATOR -->
+     <div id="calc-investment" class="calc-panel hidden">
+      <div class="glass rounded-2xl p-6 sm:p-8 glow max-w-4xl mx-auto">
+       <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center"><i data-lucide="trending-up" style="width:20px;height:20px;color:#A855F7;"></i>
+        </div>
+        <h2 class="font-display text-2xl font-bold">Investment Calculator</h2>
+       </div>
+       <div class="grid md:grid-cols-2 gap-8">
+        <div class="space-y-5">
+         <div><label for="inv-initial" class="text-sm text-muted block mb-1">Initial Investment (£)</label> <input type="number" id="inv-initial" class="calc-input w-full rounded-xl px-4 py-3" value="5000" oninput="calcInvestment()">
+         </div>
+         <div><label for="inv-monthly" class="text-sm text-muted block mb-1">Monthly Contribution (£)</label> <input type="number" id="inv-monthly" class="calc-input w-full rounded-xl px-4 py-3" value="200" oninput="calcInvestment()">
+         </div>
+         <div><label for="inv-rate" class="text-sm text-muted block mb-1">Expected Return (% per year)</label> <input type="number" id="inv-rate" class="calc-input w-full rounded-xl px-4 py-3" value="7" step="0.1" oninput="calcInvestment()"> <input type="range" class="range-slider w-full mt-2" min="1" max="20" step="0.5" value="7" oninput="document.getElementById('inv-rate').value=this.value;calcInvestment()">
+         </div>
+         <div><label for="inv-years" class="text-sm text-muted block mb-1">Investment Period (years)</label> <input type="number" id="inv-years" class="calc-input w-full rounded-xl px-4 py-3" value="20" oninput="calcInvestment()"> <input type="range" class="range-slider w-full mt-2" min="1" max="40" step="1" value="20" oninput="document.getElementById('inv-years').value=this.value;calcInvestment()">
+         </div>
+        </div>
+        <div>
+         <div class="result-card rounded-2xl p-6 mb-4">
+          <h3 class="text-sm text-muted mb-1">Future Value</h3>
+          <p id="inv-future" class="font-display text-4xl font-bold gradient-text">£109,632</p>
+         </div>
+         <div class="grid grid-cols-3 gap-3 mb-4">
+          <div class="bg-midnight/50 rounded-xl p-3 text-center">
+           <p class="text-xs text-muted">Deposited</p>
+           <p id="inv-deposited" class="text-sm font-bold text-accent">£53,000</p>
+          </div>
+          <div class="bg-midnight/50 rounded-xl p-3 text-center">
+           <p class="text-xs text-muted">Interest Earned</p>
+           <p id="inv-earned" class="text-sm font-bold text-purple-400">£56,632</p>
+          </div>
+          <div class="bg-midnight/50 rounded-xl p-3 text-center">
+           <p class="text-xs text-muted">Growth</p>
+           <p id="inv-growth" class="text-sm font-bold text-gold">107%</p>
+          </div>
+         </div>
+         <div class="bg-midnight/50 rounded-xl p-4">
+          <p class="text-sm text-muted mb-3">Growth Over Time</p>
+          <div id="inv-chart" class="flex items-end gap-1 h-36"></div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div><!-- SAVINGS GOAL CALCULATOR -->
+     <div id="calc-savings" class="calc-panel hidden">
+      <div class="glass rounded-2xl p-6 sm:p-8 glow max-w-4xl mx-auto">
+       <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 rounded-xl bg-pink-500/10 flex items-center justify-center"><i data-lucide="piggy-bank" style="width:20px;height:20px;color:#EC4899;"></i>
+        </div>
+        <h2 class="font-display text-2xl font-bold">Savings Goal Calculator</h2>
+       </div>
+       <div class="grid md:grid-cols-2 gap-8">
+        <div class="space-y-5">
+         <div><label for="sav-goal" class="text-sm text-muted block mb-1">Savings Goal (£)</label> <input type="number" id="sav-goal" class="calc-input w-full rounded-xl px-4 py-3" value="10000" oninput="calcSavings()">
+         </div>
+         <div><label for="sav-current" class="text-sm text-muted block mb-1">Current Savings (£)</label> <input type="number" id="sav-current" class="calc-input w-full rounded-xl px-4 py-3" value="1000" oninput="calcSavings()">
+         </div>
+         <div><label for="sav-monthly" class="text-sm text-muted block mb-1">Monthly Savings (£)</label> <input type="number" id="sav-monthly" class="calc-input w-full rounded-xl px-4 py-3" value="300" oninput="calcSavings()">
+         </div>
+         <div><label for="sav-rate" class="text-sm text-muted block mb-1">Savings Interest Rate (%)</label> <input type="number" id="sav-rate" class="calc-input w-full rounded-xl px-4 py-3" value="4" step="0.1" oninput="calcSavings()">
+         </div>
+        </div>
+        <div>
+         <div class="result-card rounded-2xl p-6 mb-4">
+          <h3 class="text-sm text-muted mb-1">Time to Reach Goal</h3>
+          <p id="sav-time" class="font-display text-4xl font-bold gradient-text">28 months</p>
+          <p id="sav-date" class="text-sm text-muted mt-1"></p>
+         </div>
+         <div class="grid grid-cols-2 gap-3 mb-4">
+          <div class="bg-midnight/50 rounded-xl p-4 text-center">
+           <p class="text-sm text-muted">Interest Earned</p>
+           <p id="sav-interest" class="text-lg font-bold text-accent">£412</p>
+          </div>
+          <div class="bg-midnight/50 rounded-xl p-4 text-center">
+           <p class="text-sm text-muted">Total Deposited</p>
+           <p id="sav-deposited" class="text-lg font-bold text-pink-400">£9,400</p>
+          </div>
+         </div>
+         <div class="bg-midnight/50 rounded-xl p-4">
+          <p class="text-sm text-muted mb-3">Progress to Goal</p>
+          <div class="w-full h-4 bg-midnight rounded-full overflow-hidden">
+           <div id="sav-progress" class="h-4 rounded-full bg-gradient-to-r from-pink-500 to-accent transition-all duration-700" style="width:10%"></div>
+          </div>
+          <div class="flex justify-between text-xs mt-2"><span class="text-muted">£<span id="sav-current-label">1,000</span></span> <span class="text-accent">£<span id="sav-goal-label">10,000</span></span>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+  </main><!-- ========== BLOG PAGE ========== -->
+  <main id="page-blog" class="w-full hidden">
+   <section class="pt-24 pb-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="text-center mb-12">
+      <h1 class="font-display text-3xl sm:text-4xl font-bold mb-3">Financial <span class="gradient-text">Blog</span></h1>
+      <p class="text-muted max-w-xl mx-auto">Expert tips and guides to help you save, invest, and grow.</p>
+     </div><!-- Blog Filter -->
+     <div class="flex flex-wrap justify-center gap-2 mb-10" id="blog-filters"><button onclick="filterBlogs('all')" class="calc-tab tab-active text-sm" data-filter="all">All</button> <button onclick="filterBlogs('saving')" class="calc-tab glass text-gray-300 text-sm" data-filter="saving">Saving</button> <button onclick="filterBlogs('investing')" class="calc-tab glass text-gray-300 text-sm" data-filter="investing">Investing</button> <button onclick="filterBlogs('budgeting')" class="calc-tab glass text-gray-300 text-sm" data-filter="budgeting">Budgeting</button> <button onclick="filterBlogs('credit')" class="calc-tab glass text-gray-300 text-sm" data-filter="credit">Credit</button> <button onclick="filterBlogs('loans')" class="calc-tab glass text-gray-300 text-sm" data-filter="loans">Loans</button>
+     </div>
+     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="blog-grid"></div>
+    </div>
+   </section>
+  </main><!-- ========== BLOG ARTICLE PAGE ========== -->
+  <main id="page-article" class="w-full hidden">
+   <section class="pt-24 pb-20">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8"><button onclick="navigateTo('blog')" class="flex items-center gap-2 text-accent hover:text-white mb-8 transition-colors text-sm"> <i data-lucide="arrow-left" style="width:16px;height:16px;"></i> Back to Blog </button>
+     <div id="article-content"></div>
+    </div>
+   </section>
+  </main><!-- ========== ABOUT PAGE ========== -->
+  <main id="page-about" class="w-full hidden">
+   <section class="pt-24 pb-20">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+     <div class="text-center mb-12">
+      <h1 class="font-display text-3xl sm:text-4xl font-bold mb-4">About <span class="gradient-text">BudgetAndGrow</span></h1>
+      <p class="text-muted max-w-2xl mx-auto text-lg">Your trusted guide to managing money, saving smartly, and growing your wealth — completely free.</p>
+     </div>
+     <div class="glass rounded-2xl p-8 sm:p-12 glow mb-8">
+      <h2 class="font-display text-2xl font-bold mb-4">Our Mission</h2>
+      <p class="text-gray-300 leading-relaxed mb-6">BudgetAndGrow was created with a simple belief: everyone deserves access to professional-grade financial tools and expert knowledge. We provide free, powerful calculators for budgeting, loans, mortgages, investments, and savings — along with clear, actionable blog content to help you make smarter financial decisions.</p>
+      <h2 class="font-display text-2xl font-bold mb-4">What We Offer</h2>
+      <div class="grid sm:grid-cols-2 gap-4 mb-6">
+       <div class="bg-midnight/50 rounded-xl p-4 flex items-start gap-3"><i data-lucide="calculator" style="width:20px;height:20px;color:#00D4AA;flex-shrink:0;margin-top:2px;"></i>
+        <div>
+         <p class="font-bold text-sm">5 Pro Calculators</p>
+         <p class="text-muted text-xs">Budget, Loan, Mortgage, Investment, and Savings Goal calculators with real-time results.</p>
+        </div>
+       </div>
+       <div class="bg-midnight/50 rounded-xl p-4 flex items-start gap-3"><i data-lucide="book-open" style="width:20px;height:20px;color:#00B4D8;flex-shrink:0;margin-top:2px;"></i>
+        <div>
+         <p class="font-bold text-sm">20+ Expert Blogs</p>
+         <p class="text-muted text-xs">Covering saving, investing, credit, loans, and financial planning.</p>
+        </div>
+       </div>
+       <div class="bg-midnight/50 rounded-xl p-4 flex items-start gap-3"><i data-lucide="shield" style="width:20px;height:20px;color:#FFB800;flex-shrink:0;margin-top:2px;"></i>
+        <div>
+         <p class="font-bold text-sm">100% Free</p>
+         <p class="text-muted text-xs">No hidden fees, no subscriptions, no paywalls. Ever.</p>
+        </div>
+       </div>
+       <div class="bg-midnight/50 rounded-xl p-4 flex items-start gap-3"><i data-lucide="lock" style="width:20px;height:20px;color:#EC4899;flex-shrink:0;margin-top:2px;"></i>
+        <div>
+         <p class="font-bold text-sm">Private &amp; Secure</p>
+         <p class="text-muted text-xs">All calculations happen in your browser. We never store your data.</p>
+        </div>
+       </div>
+      </div>
+      <p class="text-gray-400 text-sm">BudgetAndGrow.com — Helping you plan your money smarter and achieve financial freedom.</p>
+     </div>
+    </div>
+   </section>
+  </main><!-- Footer -->
+  <footer class="border-t border-white/5 py-10">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+     <div>
+      <div class="flex items-center gap-2 mb-4">
+       <div class="w-8 h-8 rounded-lg btn-primary flex items-center justify-center"><span class="text-midnight font-bold">B</span>
+       </div><span class="font-bold">Budget<span class="gradient-text">AndGrow</span></span>
+      </div>
+      <p class="text-muted text-sm">Your guide to managing money, saving smartly, and growing your wealth.</p>
+     </div>
+     <div>
+      <h4 class="font-bold text-sm mb-3">Calculators</h4>
+      <ul class="space-y-2">
+       <li><a onclick="navigateTo('calculators','budget')" class="text-muted text-sm hover:text-accent cursor-pointer transition-colors">Budget Calculator</a></li>
+       <li><a onclick="navigateTo('calculators','loan')" class="text-muted text-sm hover:text-accent cursor-pointer transition-colors">Loan Calculator</a></li>
+       <li><a onclick="navigateTo('calculators','mortgage')" class="text-muted text-sm hover:text-accent cursor-pointer transition-colors">Mortgage Calculator</a></li>
+       <li><a onclick="navigateTo('calculators','investment')" class="text-muted text-sm hover:text-accent cursor-pointer transition-colors">Investment Calculator</a></li>
+       <li><a onclick="navigateTo('calculators','savings')" class="text-muted text-sm hover:text-accent cursor-pointer transition-colors">Savings Goal Calculator</a></li>
+      </ul>
+     </div>
+     <div>
+      <h4 class="font-bold text-sm mb-3">Popular Articles</h4>
+      <ul class="space-y-2">
+       <li><a onclick="openArticle(0)" class="text-muted text-sm hover:text-accent cursor-pointer transition-colors">Monthly Budget Tips</a></li>
+       <li><a onclick="openArticle(2)" class="text-muted text-sm hover:text-accent cursor-pointer transition-colors">Pay Off Debt Fast</a></li>
+       <li><a onclick="openArticle(5)" class="text-muted text-sm hover:text-accent cursor-pointer transition-colors">Start Investing Small</a></li>
+       <li><a onclick="openArticle(13)" class="text-muted text-sm hover:text-accent cursor-pointer transition-colors">Build Emergency Fund</a></li>
+      </ul>
+     </div>
+     <div>
+      <h4 class="font-bold text-sm mb-3">Company</h4>
+      <ul class="space-y-2">
+       <li><a onclick="navigateTo('about')" class="text-muted text-sm hover:text-accent cursor-pointer transition-colors">About Us</a></li>
+       <li><a onclick="navigateTo('blog')" class="text-muted text-sm hover:text-accent cursor-pointer transition-colors">Blog</a></li>
+      </ul>
+     </div>
+    </div>
+    <div class="border-t border-white/5 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+     <p class="text-muted text-sm">© 2026 BudgetAndGrow.com. All rights reserved.</p>
+     <p class="text-muted text-xs">All calculations are estimates. Not financial advice.</p>
+    </div>
+   </div>
+  </footer>
+  <script>
+// ===== BLOG DATA =====
+const blogs = [
+  { title: "Monthly Budget Tips", cat: "budgeting", icon: "wallet", color: "#00D4AA", summary: "Master the art of monthly budgeting with proven strategies that actually work. Learn how to allocate your income effectively using the 50/30/20 rule.", content: "Creating a monthly budget doesn't have to be complicated. Start by listing all income sources, then categorise your expenses into needs (50%), wants (30%), and savings (20%). Track every pound for the first month to understand your spending patterns. Use apps or spreadsheets to monitor your progress. Review and adjust your budget at the end of each month. The key is consistency — even a rough budget is better than no budget at all. Set realistic targets and celebrate small wins along the way." },
+  { title: "Save Money Every Month", cat: "saving", icon: "piggy-bank", color: "#EC4899", summary: "Discover practical ways to save money consistently without feeling deprived. Small changes add up to big results.", content: "Saving money monthly starts with automating your savings — set up a standing order on payday so the money moves before you can spend it. Cancel unused subscriptions (the average person wastes £30/month on these). Cook at home more often: meal planning can save £200+ monthly. Switch energy providers annually. Use cashback apps for everyday shopping. The 24-hour rule works wonders: wait a day before any non-essential purchase over £30. Even saving £5 a day adds up to £1,825 per year." },
+  { title: "Pay Off Debt Fast", cat: "loans", icon: "zap", color: "#FFB800", summary: "Proven debt repayment strategies to become debt-free faster. Compare the snowball and avalanche methods.", content: "Two popular methods dominate debt repayment: the Snowball Method (pay smallest debts first for quick wins) and the Avalanche Method (tackle highest interest rates first to save money). List all debts with balances, rates, and minimum payments. Always pay minimums on everything, then throw extra money at your target debt. Consider balance transfer cards for high-interest credit card debt. Negotiate with lenders for lower rates. Cut expenses temporarily and direct savings to debt. Every extra pound paid reduces your total interest cost significantly." },
+  { title: "Understand Credit Scores", cat: "credit", icon: "shield", color: "#A855F7", summary: "Everything you need to know about credit scores in the UK and how to improve yours.", content: "Your credit score affects mortgage rates, loan approvals, and even phone contracts. In the UK, Experian, Equifax, and TransUnion each calculate scores differently. Key factors include: payment history (most important), credit utilisation (keep below 30%), length of credit history, credit mix, and new credit applications. Check your score free monthly. Register on the electoral roll. Fix any errors on your report immediately. Never miss payments — set up direct debits. Avoid applying for multiple credit products in a short period." },
+  { title: "Best UK Savings Accounts", cat: "saving", icon: "landmark", color: "#00B4D8", summary: "A guide to finding the best savings accounts in the UK for 2024/2025.", content: "UK savers have more options than ever. Cash ISAs offer tax-free interest (up to £20,000/year). Easy access accounts provide flexibility but lower rates. Fixed-rate bonds lock your money for better returns. Regular saver accounts from high street banks often offer the best headline rates but with monthly deposit limits. Premium Bonds offer tax-free prizes instead of interest. Always compare rates on comparison sites. Consider splitting savings across multiple accounts to maximise returns and FSCS protection (£85,000 per institution)." },
+  { title: "Start Investing Small", cat: "investing", icon: "trending-up", color: "#22C55E", summary: "How to begin your investment journey with small amounts and grow over time.", content: "You don't need thousands to start investing. Many platforms now accept as little as £1. Start with a Stocks & Shares ISA for tax-free growth. Index funds are ideal for beginners — they track the market and have low fees. Invest regularly (pound-cost averaging) rather than timing the market. Understand risk: higher potential returns = higher risk. Diversify across asset types and regions. Keep fees below 0.5% where possible. Time in the market beats timing the market — even £50/month invested over 30 years at 7% returns becomes over £58,000." },
+  { title: "Common Money Mistakes", cat: "budgeting", icon: "alert-triangle", color: "#EF4444", summary: "Avoid these frequent financial pitfalls that cost people thousands every year.", content: "The biggest money mistake? Not having an emergency fund — 40% of UK adults couldn't cover a £500 unexpected expense. Other costly errors: paying only minimum credit card payments (a £2,000 balance at 19% takes 27 years to clear with minimums), ignoring pension employer matching (it's free money), lifestyle inflation (spending more as you earn more), and not shopping around for insurance and utilities. Also avoid emotional investing, keeping too much cash (inflation erodes it), and not having a will. Awareness is the first step to avoiding these traps." },
+  { title: "Mortgage Calculator Tips", cat: "loans", icon: "home", color: "#FFB800", summary: "How to use mortgage calculators effectively and understand the results.", content: "Mortgage calculators are powerful planning tools. Key inputs: property price, deposit (aim for 10-20% to get better rates), interest rate, and term length. A longer term means lower monthly payments but more total interest. Compare repayment vs interest-only carefully. Factor in additional costs: stamp duty, solicitor fees (£1,000-2,000), surveys, and moving costs. Use calculators to test scenarios: what if rates rise 2%? Can you still afford it? Overpaying even £100/month can save tens of thousands in interest and years off your mortgage." },
+  { title: "Loan Calculator Guide", cat: "loans", icon: "file-text", color: "#00B4D8", summary: "Understanding APR, interest rates, and how to compare loans effectively.", content: "When comparing loans, focus on the APR (Annual Percentage Rate) — it includes fees and gives the true cost. Secured loans (against assets) offer lower rates but risk your property. Personal loans are unsecured and typically range from 3-30% APR depending on your credit score. Always compare the total repayable amount, not just monthly payments. A longer term reduces monthly payments but increases total cost. Use loan calculators to test different scenarios. Consider whether you actually need the loan — sometimes saving up is the better financial choice." },
+  { title: "Investment Calculator Tips", cat: "investing", icon: "bar-chart-2", color: "#A855F7", summary: "How to use investment calculators to plan your financial future.", content: "Investment calculators reveal the incredible power of compound interest. Key variables: initial amount, monthly contributions, expected return rate, and time period. Even small changes have huge impacts — increasing monthly contributions by £50 over 20 years at 7% adds over £26,000 to your portfolio. Be realistic with return expectations: UK stocks historically return 7-10% annually before inflation. Factor in fees — a 1% fee can reduce your final pot by 20%+ over 30 years. Run multiple scenarios: optimistic, realistic, and pessimistic to plan accordingly." },
+  { title: "Save on Groceries", cat: "saving", icon: "shopping-cart", color: "#22C55E", summary: "Practical strategies to cut your food bill without sacrificing quality.", content: "The average UK household spends £270/month on groceries — but you can cut this significantly. Plan meals weekly and write a list (people who do spend 23% less). Buy own-brand products — they're often identical to branded. Use apps like Too Good To Go for discounted surplus food. Shop in the evening for reduced items. Buy seasonal produce. Batch cook and freeze portions. Reduce meat consumption — plant-based meals are significantly cheaper. Compare unit prices, not packet prices. Shop at budget supermarkets for staples. These changes can easily save £100+ monthly." },
+  { title: "Budgeting for Students", cat: "budgeting", icon: "graduation-cap", color: "#00D4AA", summary: "Essential budgeting tips for university students to manage finances.", content: "Student life requires smart money management. Start by calculating your total income: maintenance loan, grants, part-time work, and family support. Essential costs include rent, food, bills, and course materials. Use student discounts everywhere — NUS/TOTUM cards, UNiDAYS, and Student Beans save hundreds yearly. Cook in bulk with housemates. Walk or cycle instead of using transport. Take advantage of free campus facilities. Avoid unnecessary overdraft charges by tracking your balance. Consider part-time work for extra income. Start building good financial habits now — your future self will thank you." },
+  { title: "Reduce Monthly Bills", cat: "saving", icon: "scissors", color: "#EC4899", summary: "Simple ways to slash your household bills and keep more money each month.", content: "UK households can save hundreds by reviewing bills regularly. Switch energy providers annually (or use comparison sites). Negotiate broadband and phone contracts — call retention teams. Review all subscriptions and cancel unused ones. Switch to LED bulbs (save £50+ per year). Reduce heating by 1°C (saves about £80/year). Use water-saving devices. Compare car and home insurance annually. Consider switching bank accounts for better perks. Bundle services where possible. Small changes across all bills typically save £100-200 per month. Set calendar reminders to review bills every 6 months." },
+  { title: "Build an Emergency Fund", cat: "saving", icon: "shield", color: "#00B4D8", summary: "Why you need an emergency fund and exactly how to build one.", content: "An emergency fund is your financial safety net — ideally 3-6 months of essential expenses. Start small: even £500 provides a buffer against unexpected costs. Keep it in an easy-access savings account (not investments — you need instant access). Automate contributions of even £25/week. Use windfalls (tax refunds, bonuses) to boost your fund. Don't touch it for non-emergencies. Once funded, you'll feel significantly less financial stress. This fund prevents you from turning to expensive credit cards or loans when life surprises you. It's the foundation of all financial planning." },
+  { title: "Plan for Retirement", cat: "investing", icon: "sunset", color: "#FFB800", summary: "Start planning for retirement now, regardless of your age.", content: "The earlier you start, the less you need to save. Thanks to compound interest, £200/month from age 25 grows to approximately £500,000 by 65 (at 7% returns). Maximise your workplace pension — employer contributions are free money. Consider a SIPP for additional tax-efficient savings. The state pension (currently £11,500/year) won't be enough alone. Use the 'half your age' rule: if you start at 30, save 15% of income for retirement. Review your pension annually and increase contributions with pay rises. Consider your desired retirement lifestyle and work backwards to determine your target." },
+  { title: "Credit Card Rewards Tips", cat: "credit", icon: "gift", color: "#A855F7", summary: "How to maximise credit card rewards without falling into debt.", content: "Credit card rewards can be lucrative IF you pay your balance in full every month. Never carry a balance — interest charges will far exceed any rewards. Choose cards matching your spending: cashback cards for everyday spending, travel cards for frequent flyers, points cards for flexible rewards. Put regular bills on your rewards card. Meet minimum spend requirements for sign-up bonuses. Keep old cards open to maintain credit history length. Monitor your credit utilisation. Set up autopay for the full balance. Used wisely, rewards cards effectively give you 1-5% back on all spending." },
+  { title: "Track Your Expenses", cat: "budgeting", icon: "clipboard-list", color: "#22C55E", summary: "The best methods and tools for tracking every penny you spend.", content: "Expense tracking is the foundation of financial awareness. Choose your method: apps (many are free and sync with bank accounts), spreadsheets (more control), or the envelope system (physical cash in categories). Track everything for at least one month — most people are shocked by their actual spending. Categorise expenses: housing, transport, food, entertainment, subscriptions, etc. Review weekly and identify patterns. Look for 'latte factor' spending — small daily purchases that add up (£3/day = £1,095/year). The goal isn't to restrict spending, but to spend intentionally and align spending with your values." },
+  { title: "Save for Big Purchases", cat: "saving", icon: "target", color: "#EC4899", summary: "Smart strategies for saving towards major purchases without debt.", content: "Whether it's a car, holiday, or house deposit, planned saving beats borrowing. Set a specific target amount and deadline. Calculate the monthly savings needed. Open a dedicated savings account (out of sight, out of mind). Automate transfers. Use a savings goal calculator to stay motivated. Cut non-essential spending temporarily. Sell items you no longer need. Consider short-term fixed-rate accounts if your timeline allows. Visualise your progress — tracking motivates continued saving. Avoid the temptation of 0% finance unless you're certain you can pay before the promotional period ends." },
+  { title: "Understand Interest Rates", cat: "loans", icon: "percent", color: "#00B4D8", summary: "A clear explanation of how interest rates work and affect your money.", content: "Interest rates are the cost of borrowing (or reward for saving). The Bank of England base rate influences all rates in the economy. For savings: higher is better. For borrowing: lower is better. Simple interest is calculated on the principal only. Compound interest is calculated on principal plus accumulated interest — this is why investing early is so powerful. APR includes fees for true comparison. AER shows the real savings return including compounding. Fixed rates provide certainty; variable rates may be lower but can change. Understanding these concepts helps you make better decisions about every financial product you use." },
+  { title: "Money Challenges to Save", cat: "saving", icon: "flame", color: "#FFB800", summary: "Fun savings challenges that make building wealth feel like a game.", content: "Savings challenges make saving fun and habitual. The 1p Challenge: save 1p on day 1, 2p on day 2... by year end you'll have £667.95. The 52-Week Challenge: save £1 in week 1, £2 in week 2... totalling £1,378. No-Spend Weekends: avoid all non-essential spending on weekends. The Round-Up Challenge: round every purchase to the nearest pound and save the difference. The £5 Note Challenge: save every £5 note you receive. The Pantry Challenge: spend a week eating only what's already in your kitchen. Pick one that matches your style and watch your savings grow!" }
+];
+
+const catColors = { saving: '#EC4899', investing: '#22C55E', budgeting: '#00D4AA', credit: '#A855F7', loans: '#00B4D8' };
+
+// ===== CONFIG / SDK =====
+const defaultConfig = {
+  background_color: '#0B1120',
+  surface_color: '#1A2340',
+  text_color: '#FFFFFF',
+  primary_action_color: '#00D4AA',
+  secondary_action_color: '#00B4D8',
+  font_family: 'DM Sans',
+  font_size: 16,
+  site_heading: 'Your Path to Financial Freedom',
+  hero_title: 'Manage Money. Grow Wealth.',
+  hero_description: 'Welcome to BudgetAndGrow, your guide to managing money, saving smartly, and growing your wealth. Use our calculators, read expert blogs, and get the tools you need for financial freedom.'
+};
+
+function applyConfig(config) {
+  const bg = config.background_color || defaultConfig.background_color;
+  const surface = config.surface_color || defaultConfig.surface_color;
+  const text = config.text_color || defaultConfig.text_color;
+  const primary = config.primary_action_color || defaultConfig.primary_action_color;
+  const secondary = config.secondary_action_color || defaultConfig.secondary_action_color;
+  const font = config.font_family || defaultConfig.font_family;
+  const fontSize = config.font_size || defaultConfig.font_size;
+
+  document.body.style.backgroundColor = bg;
+  document.body.style.color = text;
+  document.body.style.fontFamily = `${font}, DM Sans, sans-serif`;
+  document.body.style.fontSize = `${fontSize}px`;
+
+  document.querySelectorAll('.font-display').forEach(el => {
+    el.style.fontFamily = `${font}, Playfair Display, serif`;
+  });
+
+  // Text content
+  const tagline = document.getElementById('site-tagline');
+  if (tagline) tagline.textContent = config.site_heading || defaultConfig.site_heading;
+
+  const heroTitle = document.getElementById('hero-title');
+  if (heroTitle) {
+    const parts = (config.hero_title || defaultConfig.hero_title).split('.');
+    heroTitle.innerHTML = parts[0] + '.<br><span class="gradient-text">' + (parts[1] || '') + '</span>';
+  }
+
+  const heroDesc = document.getElementById('hero-desc');
+  if (heroDesc) heroDesc.textContent = config.hero_description || defaultConfig.hero_description;
+}
+
+window.elementSdk.init({
+  defaultConfig,
+  onConfigChange: async (config) => { applyConfig(config); },
+  mapToCapabilities: (config) => ({
+    recolorables: [
+      { get: () => config.background_color || defaultConfig.background_color, set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
+      { get: () => config.surface_color || defaultConfig.surface_color, set: (v) => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
+      { get: () => config.text_color || defaultConfig.text_color, set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+      { get: () => config.primary_action_color || defaultConfig.primary_action_color, set: (v) => { config.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); } },
+      { get: () => config.secondary_action_color || defaultConfig.secondary_action_color, set: (v) => { config.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); } }
+    ],
+    borderables: [],
+    fontEditable: {
+      get: () => config.font_family || defaultConfig.font_family,
+      set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
+    },
+    fontSizeable: {
+      get: () => config.font_size || defaultConfig.font_size,
+      set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
+    }
+  }),
+  mapToEditPanelValues: (config) => new Map([
+    ['site_heading', config.site_heading || defaultConfig.site_heading],
+    ['hero_title', config.hero_title || defaultConfig.hero_title],
+    ['hero_description', config.hero_description || defaultConfig.hero_description]
+  ])
+});
+
+// ===== NAVIGATION =====
+let currentPage = 'home';
+function navigateTo(page, sub) {
+  document.querySelectorAll('main').forEach(m => m.classList.add('hidden'));
+  document.getElementById('page-' + page).classList.remove('hidden');
+  currentPage = page;
+
+  // Update active nav
+  document.querySelectorAll('[data-nav]').forEach(n => n.classList.remove('active'));
+  const activeNav = document.querySelector('[data-nav="'+page+'"]');
+  if (activeNav) activeNav.classList.add('active');
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  if (page === 'calculators' && sub) {
+    setTimeout(() => switchCalc(sub), 100);
+  } else if (page === 'calculators') {
+    setTimeout(() => switchCalc('budget'), 100);
+  }
+
+  lucide.createIcons();
+}
+
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobile-menu');
+  menu.classList.toggle('hidden');
+}
+
+// ===== CALCULATORS =====
+function switchCalc(name) {
+  document.querySelectorAll('.calc-panel').forEach(p => p.classList.add('hidden'));
+  document.getElementById('calc-' + name).classList.remove('hidden');
+  document.querySelectorAll('[data-calc]').forEach(t => {
+    t.classList.remove('tab-active');
+    t.classList.add('glass', 'text-gray-300');
+  });
+  const activeTab = document.querySelector('[data-calc="'+name+'"]');
+  if (activeTab) {
+    activeTab.classList.add('tab-active');
+    activeTab.classList.remove('glass', 'text-gray-300');
+  }
+  // Run respective calculator
+  if (name === 'budget') calcBudget();
+  else if (name === 'loan') calcLoan();
+  else if (name === 'mortgage') calcMortgage();
+  else if (name === 'investment') calcInvestment();
+  else if (name === 'savings') calcSavings();
+  lucide.createIcons();
+}
+
+function fmt(n) { return n.toLocaleString('en-GB', { maximumFractionDigits: 0 }); }
+
+function calcBudget() {
+  const salary = parseFloat(document.getElementById('budget-salary').value) || 0;
+  const other = parseFloat(document.getElementById('budget-other-income').value) || 0;
+  const housing = parseFloat(document.getElementById('budget-housing').value) || 0;
+  const transport = parseFloat(document.getElementById('budget-transport').value) || 0;
+  const food = parseFloat(document.getElementById('budget-food').value) || 0;
+  const utilities = parseFloat(document.getElementById('budget-utilities').value) || 0;
+  const otherExp = parseFloat(document.getElementById('budget-other').value) || 0;
+  const income = salary + other;
+  const expenses = housing + transport + food + utilities + otherExp;
+  const balance = income - expenses;
+  const pct = (v) => income > 0 ? Math.round((v / income) * 100) : 0;
+
+  document.getElementById('budget-balance').textContent = '£' + fmt(balance);
+  document.getElementById('budget-balance').className = balance >= 0 ? 'font-display text-4xl font-bold gradient-text' : 'font-display text-4xl font-bold text-red-400';
+  document.getElementById('budget-balance-pct').textContent = pct(balance) + '% of income';
+
+  const items = ['housing', 'transport', 'food', 'utilities', 'other'];
+  const values = [housing, transport, food, utilities, otherExp];
+  items.forEach((item, i) => {
+    const p = pct(values[i]);
+    document.getElementById('budget-' + item + '-pct').textContent = p + '%';
+    document.getElementById('budget-' + item + '-bar').style.width = Math.min(p, 100) + '%';
+  });
+  const sp = pct(Math.max(balance, 0));
+  document.getElementById('budget-savings-pct').textContent = sp + '%';
+  document.getElementById('budget-savings-bar').style.width = Math.min(sp, 100) + '%';
+}
+
+function calcLoan() {
+  const P = parseFloat(document.getElementById('loan-amount').value) || 0;
+  const r = (parseFloat(document.getElementById('loan-rate').value) || 0) / 100 / 12;
+  const n = (parseFloat(document.getElementById('loan-term').value) || 1) * 12;
+  let monthly = 0, total = 0, interest = 0;
+  if (r > 0) {
+    monthly = P * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+  } else {
+    monthly = P / n;
+  }
+  total = monthly * n;
+  interest = total - P;
+
+  document.getElementById('loan-monthly').textContent = '£' + fmt(monthly);
+  document.getElementById('loan-total').textContent = '£' + fmt(total);
+  document.getElementById('loan-interest').textContent = '£' + fmt(interest);
+
+  const ppct = total > 0 ? Math.round((P / total) * 100) : 100;
+  document.getElementById('loan-principal-bar').style.width = ppct + '%';
+  document.getElementById('loan-interest-bar').style.width = (100 - ppct) + '%';
+  document.getElementById('loan-principal-pct').textContent = ppct + '%';
+  document.getElementById('loan-interest-pct').textContent = (100 - ppct) + '%';
+}
+
+function calcMortgage() {
+  const price = parseFloat(document.getElementById('mort-price').value) || 0;
+  const deposit = parseFloat(document.getElementById('mort-deposit').value) || 0;
+  const P = price - deposit;
+  const annualRate = parseFloat(document.getElementById('mort-rate').value) || 0;
+  const r = annualRate / 100 / 12;
+  const years = parseFloat(document.getElementById('mort-term').value) || 25;
+  const n = years * 12;
+  const type = document.getElementById('mort-type').value;
+  const ltv = price > 0 ? Math.round((P / price) * 100) : 0;
+
+  let monthly = 0, total = 0, totalInterest = 0;
+  if (type === 'interest-only') {
+    monthly = P * (annualRate / 100 / 12);
+    total = monthly * n + P;
+    totalInterest = monthly * n;
+  } else {
+    if (r > 0) {
+      monthly = P * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+    } else {
+      monthly = P / n;
+    }
+    total = monthly * n;
+    totalInterest = total - P;
+  }
+
+  document.getElementById('mort-monthly').textContent = '£' + fmt(monthly);
+  document.getElementById('mort-ltv').textContent = 'LTV: ' + ltv + '%';
+  document.getElementById('mort-total').textContent = '£' + fmt(total);
+  document.getElementById('mort-interest-total').textContent = '£' + fmt(totalInterest);
+
+  // Amortisation schedule
+  let balance = P;
+  const schedule = document.getElementById('mort-schedule');
+  const chart = document.getElementById('mort-amort-chart');
+  schedule.innerHTML = '';
+  chart.innerHTML = '';
+
+  const yearData = [];
+  for (let y = 1; y <= years; y++) {
+    let yearPrincipal = 0, yearInterest = 0;
+    for (let m = 0; m < 12; m++) {
+      const intPayment = balance * (annualRate / 100 / 12);
+      let prinPayment = type === 'interest-only' ? 0 : monthly - intPayment;
+      yearInterest += intPayment;
+      yearPrincipal += prinPayment;
+      balance = Math.max(0, balance - prinPayment);
+    }
+    yearData.push({ year: y, principal: yearPrincipal, interest: yearInterest, balance });
+    const tr = document.createElement('tr');
+    tr.className = 'border-t border-white/5';
+    tr.innerHTML = `<td class="py-1 text-gray-300">${y}</td><td class="text-right text-accent">£${fmt(yearPrincipal)}</td><td class="text-right text-red-400">£${fmt(yearInterest)}</td><td class="text-right text-gray-300">£${fmt(balance)}</td>`;
+    schedule.appendChild(tr);
+  }
+
+  // Chart bars
+  const maxVal = Math.max(...yearData.map(d => d.principal + d.interest), 1);
+  yearData.forEach(d => {
+    const barH = ((d.principal + d.interest) / maxVal) * 100;
+    const pRatio = d.principal / (d.principal + d.interest || 1);
+    const bar = document.createElement('div');
+    bar.className = 'flex-1 min-w-[6px] rounded-t-sm flex flex-col justify-end';
+    bar.style.height = '100%';
+    bar.innerHTML = `<div class="bg-accent rounded-t-sm" style="height:${barH * pRatio}%"></div><div class="bg-red-400" style="height:${barH * (1 - pRatio)}%"></div>`;
+    bar.title = `Year ${d.year}: Principal £${fmt(d.principal)}, Interest £${fmt(d.interest)}`;
+    chart.appendChild(bar);
+  });
+}
+
+function calcInvestment() {
+  const initial = parseFloat(document.getElementById('inv-initial').value) || 0;
+  const monthly = parseFloat(document.getElementById('inv-monthly').value) || 0;
+  const rate = (parseFloat(document.getElementById('inv-rate').value) || 0) / 100;
+  const years = parseFloat(document.getElementById('inv-years').value) || 1;
+  const r = rate / 12;
+
+  let balance = initial;
+  const deposited = initial + monthly * years * 12;
+  const yearlyData = [];
+  for (let y = 1; y <= years; y++) {
+    for (let m = 0; m < 12; m++) {
+      balance = balance * (1 + r) + monthly;
+    }
+    yearlyData.push(balance);
+  }
+
+  const earned = balance - deposited;
+  const growth = deposited > 0 ? Math.round((earned / deposited) * 100) : 0;
+
+  document.getElementById('inv-future').textContent = '£' + fmt(balance);
+  document.getElementById('inv-deposited').textContent = '£' + fmt(deposited);
+  document.getElementById('inv-earned').textContent = '£' + fmt(earned);
+  document.getElementById('inv-growth').textContent = growth + '%';
+
+  const chart = document.getElementById('inv-chart');
+  chart.innerHTML = '';
+  const maxVal = Math.max(...yearlyData, 1);
+  yearlyData.forEach((val, i) => {
+    const bar = document.createElement('div');
+    bar.className = 'flex-1 min-w-[6px] rounded-t-sm transition-all duration-500';
+    bar.style.height = (val / maxVal * 100) + '%';
+    bar.style.background = 'linear-gradient(to top, #00D4AA, #A855F7)';
+    bar.title = `Year ${i+1}: £${fmt(val)}`;
+    chart.appendChild(bar);
+  });
+}
+
+function calcSavings() {
+  const goal = parseFloat(document.getElementById('sav-goal').value) || 0;
+  const current = parseFloat(document.getElementById('sav-current').value) || 0;
+  const monthly = parseFloat(document.getElementById('sav-monthly').value) || 1;
+  const rate = (parseFloat(document.getElementById('sav-rate').value) || 0) / 100 / 12;
+
+  let balance = current;
+  let months = 0;
+  const maxMonths = 600;
+  while (balance < goal && months < maxMonths) {
+    balance = balance * (1 + rate) + monthly;
+    months++;
+  }
+
+  const totalDeposited = current + monthly * months;
+  const interestEarned = balance - totalDeposited;
+  const y = Math.floor(months / 12);
+  const m = months % 12;
+  const timeStr = y > 0 ? `${y} yr${y>1?'s':''} ${m} mo` : `${months} months`;
+
+  const targetDate = new Date();
+  targetDate.setMonth(targetDate.getMonth() + months);
+
+  document.getElementById('sav-time').textContent = months >= maxMonths ? 'Too long' : timeStr;
+  document.getElementById('sav-date').textContent = months < maxMonths ? 'Target: ' + targetDate.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }) : '';
+  document.getElementById('sav-interest').textContent = '£' + fmt(Math.max(interestEarned, 0));
+  document.getElementById('sav-deposited').textContent = '£' + fmt(totalDeposited);
+  document.getElementById('sav-current-label').textContent = fmt(current);
+  document.getElementById('sav-goal-label').textContent = fmt(goal);
+  const progress = goal > 0 ? Math.min((current / goal) * 100, 100) : 0;
+  document.getElementById('sav-progress').style.width = progress + '%';
+}
+
+// ===== BLOG RENDERING =====
+function renderBlogs(filter) {
+  const grid = document.getElementById('blog-grid');
+  grid.innerHTML = '';
+  const filtered = filter === 'all' ? blogs : blogs.filter(b => b.cat === filter);
+  filtered.forEach((blog, i) => {
+    const actualIndex = blogs.indexOf(blog);
+    const card = document.createElement('div');
+    card.className = 'blog-card glass rounded-2xl overflow-hidden cursor-pointer glass-hover transition-all';
+    card.onclick = () => openArticle(actualIndex);
+    card.innerHTML = `
+      <div class="h-36 overflow-hidden relative" style="background: linear-gradient(135deg, ${blog.color}22, ${blog.color}08)">
+        <div class="absolute inset-0 flex items-center justify-center">
+          <i data-lucide="${blog.icon}" style="width:48px;height:48px;color:${blog.color};opacity:0.6;"></i>
+        </div>
+        <div class="absolute top-3 left-3">
+          <span class="text-xs font-bold px-3 py-1 rounded-full" style="background:${blog.color}22;color:${blog.color}">${blog.cat.charAt(0).toUpperCase()+blog.cat.slice(1)}</span>
+        </div>
+      </div>
+      <div class="p-5">
+        <h3 class="font-bold text-lg mb-2 line-clamp-2">${blog.title}</h3>
+        <p class="text-muted text-sm line-clamp-2">${blog.summary}</p>
+        <div class="mt-4 flex items-center gap-2 text-accent text-sm font-medium">Read More <i data-lucide="arrow-right" style="width:14px;height:14px;"></i></div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+  lucide.createIcons();
+}
+
+function filterBlogs(cat) {
+  document.querySelectorAll('[data-filter]').forEach(b => {
+    b.classList.remove('tab-active');
+    b.classList.add('glass', 'text-gray-300');
+  });
+  const activeFilter = document.querySelector('[data-filter="'+cat+'"]');
+  if (activeFilter) {
+    activeFilter.classList.add('tab-active');
+    activeFilter.classList.remove('glass', 'text-gray-300');
+  }
+  renderBlogs(cat);
+}
+
+function openArticle(index) {
+  const blog = blogs[index];
+  if (!blog) return;
+  navigateTo('article');
+  const container = document.getElementById('article-content');
+  const relatedBlogs = blogs.filter((b, i) => b.cat === blog.cat && i !== index).slice(0, 3);
+
+  container.innerHTML = `
+    <div class="mb-4">
+      <span class="text-xs font-bold px-3 py-1 rounded-full" style="background:${blog.color}22;color:${blog.color}">${blog.cat.charAt(0).toUpperCase()+blog.cat.slice(1)}</span>
+    </div>
+    <h1 class="font-display text-3xl sm:text-4xl font-bold mb-6">${blog.title}</h1>
+    <div class="h-48 rounded-2xl mb-8 flex items-center justify-center" style="background: linear-gradient(135deg, ${blog.color}15, ${blog.color}05)">
+      <i data-lucide="${blog.icon}" style="width:64px;height:64px;color:${blog.color};opacity:0.5;"></i>
+    </div>
+    <div class="prose prose-invert max-w-none">
+      <p class="text-lg text-gray-300 leading-relaxed mb-6">${blog.summary}</p>
+      <div class="text-gray-400 leading-relaxed space-y-4">
+        ${blog.content.split('. ').reduce((acc, sentence, i) => {
+          if (i % 3 === 0 && i > 0) return acc + '</p><p>' + sentence + '. ';
+          return acc + sentence + '. ';
+        }, '<p>') + '</p>'}
+      </div>
+    </div>
+    ${relatedBlogs.length > 0 ? `
+    <div class="mt-12 pt-8 border-t border-white/10">
+      <h3 class="font-display text-xl font-bold mb-6">Related Articles</h3>
+      <div class="grid sm:grid-cols-3 gap-4">
+        ${relatedBlogs.map(rb => {
+          const ri = blogs.indexOf(rb);
+          return `<div onclick="openArticle(${ri})" class="glass rounded-xl p-4 cursor-pointer glass-hover transition-all">
+            <span class="text-xs" style="color:${rb.color}">${rb.cat}</span>
+            <h4 class="font-bold text-sm mt-1">${rb.title}</h4>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>` : ''}
+  `;
+  lucide.createIcons();
+}
+
+// ===== FEATURED BLOGS =====
+function renderFeaturedBlogs() {
+  const container = document.getElementById('featured-blogs');
+  const featured = [0, 5, 13]; // Budget Tips, Start Investing, Emergency Fund
+  featured.forEach(i => {
+    const blog = blogs[i];
+    const card = document.createElement('div');
+    card.className = 'blog-card glass rounded-2xl overflow-hidden cursor-pointer glass-hover transition-all';
+    card.onclick = () => openArticle(i);
+    card.innerHTML = `
+      <div class="h-32 overflow-hidden relative" style="background: linear-gradient(135deg, ${blog.color}22, ${blog.color}08)">
+        <div class="absolute inset-0 flex items-center justify-center">
+          <i data-lucide="${blog.icon}" style="width:40px;height:40px;color:${blog.color};opacity:0.6;"></i>
+        </div>
+      </div>
+      <div class="p-5">
+        <span class="text-xs font-bold px-2 py-0.5 rounded-full" style="background:${blog.color}22;color:${blog.color}">${blog.cat.charAt(0).toUpperCase()+blog.cat.slice(1)}</span>
+        <h3 class="font-bold mt-2 mb-1">${blog.title}</h3>
+        <p class="text-muted text-sm line-clamp-2">${blog.summary}</p>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+// ===== HERO CHART =====
+function renderHeroChart() {
+  const chart = document.getElementById('hero-chart');
+  if (!chart) return;
+  const vals = [30, 45, 38, 52, 48, 60, 55, 70, 65, 78, 72, 85];
+  vals.forEach(v => {
+    const bar = document.createElement('div');
+    bar.className = 'flex-1 rounded-t-sm chart-bar';
+    bar.style.height = '0%';
+    bar.style.background = 'linear-gradient(to top, #00D4AA, #00B4D8)';
+    bar.style.opacity = '0.7';
+    chart.appendChild(bar);
+    setTimeout(() => { bar.style.height = v + '%'; }, 500);
+  });
+}
+
+// ===== INIT =====
+renderFeaturedBlogs();
+renderHeroChart();
+renderBlogs('all');
+calcBudget();
+calcLoan();
+calcMortgage();
+calcInvestment();
+calcSavings();
+lucide.createIcons();
+</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9dc20c0bb5592704',t:'MTc3MzQ3ODM5Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
